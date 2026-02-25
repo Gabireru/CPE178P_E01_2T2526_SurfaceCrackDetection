@@ -1,0 +1,13 @@
+train: ./train/images
+val: ./val/images
+test: ./test/images
+
+nc: 1
+names: ['crack']
+
+roboflow:
+  workspace: ta-8behn
+  project: crack-detection-ypnwo
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ta-8behn/crack-detection-ypnwo/dataset/3
