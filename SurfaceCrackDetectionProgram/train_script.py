@@ -7,9 +7,12 @@ from pathlib import Path
 Gabriel:
 Hello! Welcome to my code contribution!
 
-Important things to note:
-- Make sure you have CUDA available. You can run with CPU, but it will take much longer.
-- We are using YOLO Detection for this project.
+Updates:
+-This uses the other dataset instead! Last dataset has a lot of error's soo I moved on to another one.
+-The train code has been modified again quite a bit. Just some imporvements
+
+That's all
+-C.C
 """
 
 def main():

@@ -10,19 +10,19 @@ def main(page: ft.Page):
     page.title = "Surface Crack Detection System"
     page.scroll = "adaptive"
 
-    # Window & layout
     page.window.width = 900
-    page.window.height = 600
+    page.window.height = 650
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # ---------- Title ----------
     title_text = ft.Text(
         "Surface Crack Detection",
         size=24,
         weight=ft.FontWeight.BOLD,
         color="#000000"
     )
+
+    image_name = ft.Text(color="#000000")
 
     image_holder = ft.Image(src="", visible=False, fit="contain")
 
@@ -32,7 +32,13 @@ def main(page: ft.Page):
         weight=ft.FontWeight.BOLD
     )
 
-    # ---------- File Picker ----------
+    confidence_label = ft.Text("Confidence: 0%", color="#000000")
+    confidence_bar = ft.ProgressBar(width=250, value=0)
+
+    processing = ft.ProgressRing(visible=False)
+
+    history_list = ft.ListView(height=120, width=300)
+
     async def open_picker(e: ft.Event[ft.Control]):
         try:
             picker = ft.FilePicker()
@@ -46,6 +52,8 @@ def main(page: ft.Page):
                 return
 
             f = files[0]
+
+            image_name.value = f"Selected Image: {f.name}"
 
             if getattr(f, "path", None):
                 with open(f.path, "rb") as rf:
@@ -64,13 +72,13 @@ def main(page: ft.Page):
             image_holder.src = temp_path
             image_holder.visible = True
             result_text.value = ""
+
             page.update()
 
         except Exception as ex:
             result_text.value = f"Failed to pick image: {ex}"
             page.update()
 
-    # ---------- Predict Button ----------
     predict_btn = ft.ElevatedButton(
         content=ft.Text("Analyze Surface"),
         width=170,
@@ -84,6 +92,7 @@ def main(page: ft.Page):
             return
 
         predict_btn.disabled = True
+        processing.visible = True
         page.update()
 
         try:
@@ -93,12 +102,14 @@ def main(page: ft.Page):
         except Exception as ex:
             result_text.value = f"Failed to read selected image: {ex}"
             predict_btn.disabled = False
+            processing.visible = False
             page.update()
             return
 
         await send_prediction_request(image_data)
 
         predict_btn.disabled = False
+        processing.visible = False
         page.update()
 
     async def send_prediction_request(image_data: str):
@@ -123,16 +134,33 @@ def main(page: ft.Page):
                     crack_count = data.get("crack_count")
                     max_conf = data.get("max_confidence")
 
+                    confidence_bar.value = max_conf / 100
+                    confidence_label.value = f"Confidence: {round(max_conf,2)}%"
+
                     if not has_crack:
+
                         result_text.value = (
                             "Surface Condition: NORMAL\n"
                             "Cracks Detected: 0"
                         )
+
+                        history_list.controls.append(
+                            ft.Text("Normal surface detected")
+                        )
+
                     else:
+
+
                         result_text.value = (
                             "Surface Condition: CRACK DETECTED\n"
                             f"Number of Cracks: {crack_count}\n"
                             f"Highest Confidence: {round(max_conf, 2)}%"
+                        )
+
+                        history_list.controls.append(
+                            ft.Text(
+                                f"{crack_count} cracks | {round(max_conf,2)}%"
+                            )
                         )
 
                 else:
@@ -149,18 +177,23 @@ def main(page: ft.Page):
 
     predict_btn.on_click = predict_image
 
-    # ---------- Layout ----------
     selected_image = ft.Row(
         [
             ft.Container(
-                content=image_holder,
+                content=ft.Column(
+                    [
+                        image_name,
+                        image_holder
+                    ],
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                ),
                 margin=10,
                 padding=10,
                 border=ft.border.all(5, "#000000"),
                 alignment=ft.alignment.Alignment(0, 0),
                 bgcolor="#ffffff",
                 width=300,
-                height=300,
+                height=320,
                 border_radius=10,
                 ink=True,
                 on_click=open_picker,
@@ -172,22 +205,28 @@ def main(page: ft.Page):
                     height=160,
                     fit="contain",
                 ),
-                # Give the container a height matching the left box so vertical centering is visible
                 height=250,
-                # Optional: set a width to control spacing; remove or tweak as you like
                 width=120,
-                alignment=ft.alignment.Alignment(0, 0),  # center the image inside
+                alignment=ft.alignment.Alignment(0, 0),
             ),
 
             ft.Container(
-                content=result_text,
+                content=ft.Column(
+                    [
+                        result_text,
+                        confidence_label,
+                        confidence_bar
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                ),
                 margin=10,
                 padding=10,
                 border=ft.border.all(5, "#000000"),
                 alignment=ft.alignment.Alignment(0, 0),
                 bgcolor="#ffffff",
                 width=320,
-                height=180,
+                height=200,
                 border_radius=10,
             ),
         ],
@@ -196,14 +235,29 @@ def main(page: ft.Page):
     )
 
     predict_button = ft.Container(
-        predict_btn,
+        ft.Column(
+            [
+                predict_btn,
+                processing
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        ),
         alignment=ft.alignment.Alignment(0, 0),
+    )
+
+    history_section = ft.Column(
+        [
+            ft.Text("Detection History", weight=ft.FontWeight.BOLD),
+            history_list
+        ],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER
     )
 
     page.add(
         title_text,
         selected_image,
-        predict_button
+        predict_button,
+        history_section
     )
 
 
