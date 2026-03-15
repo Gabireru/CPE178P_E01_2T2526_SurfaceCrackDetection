@@ -1,0 +1,6 @@
+names:
+- Crack
+- Nocrack
+nc: 2
+train: ./datasets/surfaces/train/images
+val: ./datasets/surfaces/valid/images
