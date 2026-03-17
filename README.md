@@ -23,6 +23,21 @@ Install the YOLO package from Ultralytics by running:
 
 **Checking directories:**
 
+Make sure you have Python 3.10 or higher installed. You can download it from python.org and install it like any normal program. After installing, open a terminal or command prompt and check it by running python --version. It should print your Python version.
+
+If you want, you can create a virtual environment to keep project dependencies separate by running python -m venv venv or you can just install it globally but just know that it may cause conflicts with other applications. Activate it with venv\Scripts\activate if you are on Windows, or source venv/bin/activate if you are on Mac or Linux.
+
+
+**Installing dependencies:**
+*Note: If you are using "uv" rather than only using "pip", just type `uv` before `pip` before installing the required dependencies.*
+Install PyTorch. If you have a GPU and want faster training, run:
+`pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121`
+If you only have a CPU, run:
+`pip install torch torchvision torchaudio`
+Install the YOLO package from Ultralytics by running:
+`pip install ultralytics`
+
+**Checking directories:**
 Make sure the directories of the folders inside the dataset looks like this:
 ```
 dataset/train/images
