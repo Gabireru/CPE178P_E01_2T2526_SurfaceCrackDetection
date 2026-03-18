@@ -2,8 +2,6 @@ import flet as ft
 
 from main_page import main as menu_view
 from crack_detection import crack_detection_view
-from signup_engineer import main as signup_engineer_view
-from signup_developer import main as signup_developer_view
 
 
 def main(page: ft.Page):
@@ -17,24 +15,23 @@ def main(page: ft.Page):
 
         page.controls.clear()
 
-        signup_button = ft.ElevatedButton(
-            content=ft.Text("SIGN UP"),
-            on_click=lambda e: page.go("/signup_engineer")
-        )
-
-        login_button = ft.OutlinedButton(
-            content=ft.Text("LOGIN"),
+        start_button = ft.ElevatedButton(
+            content=ft.Text(
+                "START",
+                color="#FFFFFF"  # font color as hex
+            ),
+            bgcolor="#000000",   # button background color as hex
             on_click=lambda e: page.go("/menu")
         )
 
         layout = ft.Container(
             image=ft.DecorationImage(
-                src="CRACK DETECTION.png",
+                src="title.png",
                 fit=ft.BoxFit.COVER
             ),
             expand=True,
             content=ft.Row(
-                [signup_button, login_button],
+                [start_button],
                 alignment=ft.MainAxisAlignment.CENTER
             )
         )
@@ -55,12 +52,6 @@ def main(page: ft.Page):
 
         elif page.route == "/detect":
             crack_detection_view(page)
-
-        elif page.route == "/signup_engineer":
-            signup_engineer_view(page)
-
-        elif page.route == "/signup_developer":
-            signup_developer_view(page)
 
         page.update()
 

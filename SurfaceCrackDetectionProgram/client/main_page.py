@@ -26,10 +26,6 @@ def main(page: ft.Page):
         "crack_button.png",
         lambda _: page.go("/detect")
     )
-    wall_btn = create_image_button("wall_button.png", lambda _: print("Navigating to: Wall Import..."))
-    
-    # This button will be perfect for hooking up to your Roboflow dataset logic!
-    dataset_btn = create_image_button("dataset.png", lambda _: print("Navigating to: Dataset Management..."))
 
     # 2. Build the main layout
     choose_layout = ft.Container(
@@ -43,9 +39,7 @@ def main(page: ft.Page):
             controls=[
                 # 3. Position the buttons using left and top coordinates. 
                 # You might need to tweak these slightly to align perfectly with the text on your specific background image!
-                ft.Container(content=crack_btn, left=160, top=180),
-                ft.Container(content=wall_btn, left=510, top=180),
-                ft.Container(content=dataset_btn, left=860, top=180),
+                ft.Container(content=crack_btn, left=510, top=180),
             ]
         )
     )
