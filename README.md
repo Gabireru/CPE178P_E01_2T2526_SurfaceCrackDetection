@@ -93,12 +93,12 @@ To open the server, open the terminal, go to the directory where the server fold
 
 *In a virtual environment:*
 
-fastapi dev main.py
+`fastapi dev main.py`
 
 
 *In a global enironment:*
 
-python -m fastapi dev main.py
+`python -m fastapi dev main.py`
 
 
 Once the `starting development server` text popped up, you are good to run the client code.
